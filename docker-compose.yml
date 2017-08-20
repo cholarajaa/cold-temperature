@@ -1,0 +1,26 @@
+version: '2'
+services:
+
+  postgres:
+    image: postgres:latest
+    volumes:
+      - db_data:/var/lib/postgres
+    restart: always
+    ports:
+      - "5432"
+
+  web:
+    links:
+      - postgres
+    restart: always
+    build: ./hotorcold/
+    image: hotorcold:1.1
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./hotorcold/:/code/
+    ports:
+      - "8000:8000"
+
+  
+volumes:
+  db_data:

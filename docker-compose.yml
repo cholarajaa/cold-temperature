@@ -1,6 +1,15 @@
 version: '2'
 services:
 
+  rabbit:
+    hostname: rabbit
+    image: rabbitmq:latest
+    environment:
+        - RABBITMQ_DEFAULT_USER=admin
+        - RABBITMQ_DEFAULT_PASS=mypass
+    ports:
+        - "5672"
+
   postgres:
     image: postgres:latest
     volumes:
@@ -21,6 +30,11 @@ services:
     ports:
       - "8000:8000"
 
+  celeryworker:
+    image: hotorcold:1.1
+    depends_on:
+      - rabbit
+    command: celery -A hotorcold worker -l INFO
   
 volumes:
   db_data:

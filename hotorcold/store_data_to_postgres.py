@@ -1,6 +1,7 @@
 import os
 import csv
 import json
+import time
 import django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hotorcold.settings")
 django.setup()
@@ -31,7 +32,10 @@ def aggregate_user_data():
 
 
 if __name__ == '__main__':
-    print 'yes'
+    t = time.time()
     test_create_20000_events()
+    print("created tasks to create 20,000 records in secs:", (t - time.time()))
     test_update_20000_events()
+    print("created tasks to update 20,000 records in secs:", (t - time.time()))
     aggregate_user_data()
+    print("created task to aggregate userdata in secs:", (t - time.time()))

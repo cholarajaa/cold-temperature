@@ -7,3 +7,4 @@ a template to create idempotent data storage
 
 -- docker-compose up
 
+-- docker exec -it cold-temperaute_web_1 py.test

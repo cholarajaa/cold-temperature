@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from heat.models import Event, UserData, EventsDump
+from reactor.models import Event, UserData, EventsDump
 
 
 class EventsDumpSerializer(serializers.ModelSerializer):

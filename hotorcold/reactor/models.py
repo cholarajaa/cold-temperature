@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import JSONField, ArrayField
 
 
 class EventsDump(models.Model):
@@ -87,6 +87,13 @@ class AggregatedUserData(models.Model):
     lowTemp = models.FloatField(null=True, blank=True)
     referenceTemp = models.FloatField(null=True, blank=True)
     referenceLife = models.FloatField(null=True, blank=True)
+    partnerName = JSONField(null=False, blank=False, default='')
+    segmentTypeDeparture = JSONField(null=False, blank=False, default='')
+    functionalName = JSONField(null=False, blank=False, default='')
+    partnerTypeStart = JSONField(null=False, blank=False, default='')
+    bizLocationTypeStart = JSONField(null=False, blank=False, default='')
+    packagingTypeCode = JSONField(null=False, blank=False, default='')
+    tradeItemCountryOfOrigin = JSONField(null=False, blank=False, default='')
 
     def __unicode__(self):
         return '%s - %s' % (

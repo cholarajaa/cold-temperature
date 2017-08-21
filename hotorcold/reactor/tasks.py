@@ -61,7 +61,7 @@ def create_event(event_data):
 @celery_app.task(name='agreegate_userdata', ignore_result=True)
 def update_aggregated_userdata():
     for c, u in list(Counter(UserData.objects.values_list(
-        'company', 'usertype'))):
+            'company', 'usertype'))):
         comp_n_type = UserData.objects.filter(company=c, usertype=u)
         aggregated_dict = comp_n_type.aggregate(
             Avg('lowTemp'), Avg('referenceTemp'), Avg('referenceLife'))
@@ -69,9 +69,24 @@ def update_aggregated_userdata():
             company=c,
             usertype=u,
             defaults={
-                "lowTemp": aggregated_dict['lowTemp__avg'],
-                "referenceTemp": aggregated_dict['referenceTemp__avg'],
-                "referenceLife": aggregated_dict['referenceLife__avg']
+                "lowTemp": aggregated_dict["lowTemp__avg"],
+                "referenceTemp": aggregated_dict["referenceTemp__avg"],
+                "referenceLife": aggregated_dict["referenceLife__avg"],
+                "partnerName": Counter(list(comp_n_type.values_list(
+                    "partnerName", flat=True))),
+                "segmentTypeDeparture": Counter(list(comp_n_type.values_list(
+                    "segmentTypeDeparture", flat=True))),
+                "functionalName": Counter(list(comp_n_type.values_list(
+                    "functionalName", flat=True))),
+                "partnerTypeStart": Counter(list(comp_n_type.values_list(
+                    "partnerTypeStart", flat=True))),
+                "bizLocationTypeStart": Counter(list(comp_n_type.values_list(
+                    "bizLocationTypeStart", flat=True))),
+                "packagingTypeCode": Counter(list(comp_n_type.values_list(
+                    "packagingTypeCode", flat=True))),
+                "tradeItemCountryOfOrigin": Counter(list(
+                    comp_n_type.values_list(
+                        "tradeItemCountryOfOrigin", flat=True)))
             }
         )
     return True

@@ -7,7 +7,13 @@ a template to create idempotent data storage
 
 -- docker-compose up
 
--- docker exec -it cold-temperaute_web_1 py.test
+### open up a new tab
+	-- docker exec -it coldtemperature_web_1 python manage.py migrate
+
+	-- docker exec -it coldtemperature_web_1 python create_20000_data_csv.py
+
+	### Run more than once to see eventsdump increasing and not the other tables
+	-- docker exec -it cold-temperaute_web_1 python store_data_to_postgres.py
 
 
 References

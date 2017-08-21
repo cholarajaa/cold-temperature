@@ -2,19 +2,17 @@
 from __future__ import unicode_literals
 
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 
 
 class EventsDump(models.Model):
     '''To store raw dump of the events'''
-    events_json = models.TextField(null=False, blank=False)
+    events_json = JSONField(null=False, blank=False)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
-    def save(self, *args, **kwargs):
-        super(EventsDump, self).save(*args, **kwargs)
-
     def __unicode__(self):
-        return self.events_json
+        return '%s' % self.events_json
 
 
 class UserData(models.Model):
@@ -82,7 +80,7 @@ class Event(models.Model):
         )
 
 
-class AggergatedUserData(models.Model):
+class AggregatedUserData(models.Model):
     """Aggregated data from UserData table"""
     company = models.CharField(max_length=256, null=False, blank=False)
     usertype = models.CharField(max_length=256, null=False, blank=False)

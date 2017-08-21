@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 import json
 from hotorcold.celery import app as celery_app
 from reactor.serializers import EventSerializer, UserDataSerializer
-from reactor.models import Event, UserData, AggergatedUserData
+from reactor.models import Event, UserData, AggregatedUserData
 from collections import Counter
 from django.db.models import Avg
 
@@ -14,7 +14,8 @@ def create_event(event_data):
     '''this is celery task to create event from dict'''
     event_dict = json.loads(event_data)
     user_data = event_dict['user_data']
-    # import pdb;pdb.set_trace()
+    if type(user_data) != dict:
+        user_data = json.loads(user_data)
     userdata_set = UserData.objects.filter(
         owner_name=user_data.get('owner_name', None),
         company=user_data.get('company', None),
@@ -64,7 +65,7 @@ def update_aggregated_userdata():
         comp_n_type = UserData.objects.filter(company=c, usertype=u)
         aggregated_dict = comp_n_type.aggregate(
             Avg('lowTemp'), Avg('referenceTemp'), Avg('referenceLife'))
-        AggergatedUserData.objects.update_or_create(
+        AggregatedUserData.objects.update_or_create(
             company=c,
             usertype=u,
             defaults={

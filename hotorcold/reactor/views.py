@@ -34,6 +34,11 @@ class EventViewSet(viewsets.ViewSet):
         serializer = self.serializer_class(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def destroy(self, request, pk=None):
+        if pk:
+            Event.objects.get(pk=pk).delete()
+        return Response({"message": "Success"}, status=status.HTTP_200_OK)
+
 
 @api_view(('GET',))
 def aggregate_user_data(request):

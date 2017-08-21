@@ -6,7 +6,8 @@ import json
 from django.test import TestCase
 from rest_framework.test import APIClient
 from rest_framework import status
-from reactor.models import EventsDump
+from reactor.models import EventsDump, Event
+from mixer.backend.django import mixer
 
 
 class EventViewSetTestCase(TestCase):
@@ -14,7 +15,7 @@ class EventViewSetTestCase(TestCase):
 
     def setUp(self):
         """
-        Define the test client and notification data
+        Define the test client and event data
         """
         self.client = APIClient()
         self.event_data = json.dumps({
@@ -50,7 +51,7 @@ class EventViewSetTestCase(TestCase):
 
     def test_api_can_create_event(self):
         """
-        Test the api has notification created.
+        Test the api has event created.
         """
         self.response = self.client.post(
             '/api/events/',
@@ -62,3 +63,38 @@ class EventViewSetTestCase(TestCase):
             self.response.status_code,
             status.HTTP_200_OK
         )
+
+    def test_api_can_check_event_created(self):
+        """
+        Test api to check event id
+        """
+        event = mixer.blend('reactor.event')
+        self.response = self.client.get(
+            '/api/events/',
+            format="json")
+        self.assertEqual(
+            self.response.status_code,
+            status.HTTP_200_OK
+        )
+        self.assertEqual(
+            json.loads(self.response.content)[0]['id'],
+            event.id
+        )
+
+    def test_api_can_delete_event(self):
+        """
+        Test api to delete event
+        """
+        # UserData.objects.all().delete()
+        event = mixer.blend('reactor.event')
+        self.response = self.client.delete(
+            '/api/events/%d/' % event.pk,
+            '{"id": %d}' % event.pk,
+            format="json")
+        # import pdb;pdb.set_trace()
+        self.assertEqual(
+            self.response.status_code,
+            status.HTTP_200_OK
+        )
+        self.assertEqual(
+            Event.objects.count(), 0)

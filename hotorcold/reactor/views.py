@@ -20,7 +20,6 @@ class EventViewSet(viewsets.ViewSet):
     queryset = Event.objects.all()
 
     def create(self, request):
-        import pdb;pdb.set_trace()
         data = {
             'events_json': request.data
         }

@@ -52,7 +52,6 @@ class EventViewSetTestCase(TestCase):
         """
         Test the api has notification created.
         """
-        import pdb;pdb.set_trace()
         self.response = self.client.post(
             '/api/events/',
             self.event_data,

@@ -3,3 +3,4 @@ djangorestframework==3.6.3
 psycopg2==2.7.3
 pytest-django==3.1.2
 celery==4.1.0
+mixer==5.6.6

@@ -85,13 +85,11 @@ class EventViewSetTestCase(TestCase):
         """
         Test api to delete event
         """
-        # UserData.objects.all().delete()
         event = mixer.blend('reactor.event')
         self.response = self.client.delete(
             '/api/events/%d/' % event.pk,
             '{"id": %d}' % event.pk,
             format="json")
-        # import pdb;pdb.set_trace()
         self.assertEqual(
             self.response.status_code,
             status.HTTP_200_OK

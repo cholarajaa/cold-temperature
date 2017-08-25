@@ -43,15 +43,6 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = '__all__'
 
-    def create(self, validated_data):
-        user_data = validated_data.get('user_data')
-        user_ser = UserDataSerializer(data=user_data)
-        if user_ser.is_valid():
-            user_data = user_ser.save()
-        validated_data['user_data'] = user_data
-        event = Event.objects.create(**validated_data)
-        return event
-
     def update(self, instance, validated_data):
         instance.read_point = validated_data.get(
             'read_point', instance.read_point)

@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.test import TestCase
 from reactor.models import Event, UserData, EventsDump, AggregatedUserData
+from django.db.utils import IntegrityError
 from mixer.backend.django import mixer
 
 
@@ -59,8 +60,15 @@ class ModelsTestCase(TestCase):
         Test UserData model can create a UserData instance
         """
         self.assertEqual(UserData.objects.count(), 0)
-        mixer.blend('reactor.userdata')
+        user = mixer.blend('reactor.userdata')
         self.assertEqual(UserData.objects.count(), 1)
+        try:
+            user = mixer.blend(
+                'reactor.userdata', owner_name=user.owner_name,
+                company=user.company, usertype=user.usertype
+            )
+        except Exception as e:
+            self.assertEqual('duplicate key value violates unique constraint' in e.message, True)
 
     def test_model_can_create_AggregatedUserData(self):
         """

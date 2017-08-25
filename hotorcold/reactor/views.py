@@ -9,7 +9,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import api_view
 from reactor.models import Event
 from reactor.serializers import EventSerializer, EventsDumpSerializer
-from reactor.tasks import create_event, update_aggregated_userdata
+from reactor.tasks import create_or_update_event_data
 
 
 class EventViewSet(viewsets.ViewSet):
@@ -26,7 +26,7 @@ class EventViewSet(viewsets.ViewSet):
         serializer = EventsDumpSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            create_event.apply_async((request.data,))
+            create_or_update_event_data.apply_async((request.data,))
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -38,12 +38,6 @@ class EventViewSet(viewsets.ViewSet):
         if pk:
             Event.objects.get(pk=pk).delete()
         return Response({"message": "Success"}, status=status.HTTP_200_OK)
-
-
-@api_view(('GET',))
-def aggregate_user_data(request):
-    update_aggregated_userdata.apply_async()
-    return Response({"message": "Success"}, status=status.HTTP_200_OK)
 
 
 def index(request):
